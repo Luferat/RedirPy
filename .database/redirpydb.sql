@@ -2,7 +2,7 @@ DROP DATABASE IF EXISTS redirpydb;
 
 CREATE DATABASE redirpydb
 	CHARACTER SET utf8mb4
-    COLLATE utf8mb4_general_ci;
+    COLLATE utf8mb4_unicode_ci;
 
 USE redirpydb;
 
@@ -13,19 +13,9 @@ CREATE TABLE redir (
     link TEXT NOT NULL,
     short VARCHAR(127) NOT NULL,
     expire DATETIME DEFAULT NULL,
-    views INT DEFAULT '0'
+    views INT DEFAULT '0',
+    status ENUM('on', 'del') DEFAULT 'on'
 );
 
-DELIMITER //
-
-CREATE TRIGGER set_expire_before_insert
-BEFORE INSERT ON redir
-FOR EACH ROW
-BEGIN
-    SET NEW.expire = DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 1 YEAR);
-END;
-
-//
-
-DELIMITER ;
-
+-- REMOVA-ME após executar pela primeira vez
+DROP TRIGGER IF EXISTS set_expire_before_insert;
