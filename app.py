@@ -2,6 +2,9 @@ from flask import Flask, render_template, request
 from datetime import datetime, timedelta
 from flask_mysqldb import MySQL
 
+# Endereço raiz do shortlink
+root_link = 'http://localhost:5000'
+
 
 app = Flask(__name__)
 
@@ -41,9 +44,35 @@ def edit(id):
     return f'Editando {id}'
 
 
+@app.route('/del/<id>')
+def delete(id):
+    return f'Apagando {id}'
+
+
 @app.route('/admin')
 def admin():
-    return 'Listando todo mundo'
+
+    sql = '''
+        SELECT id, name, link, short, views,
+            DATE_FORMAT(date, '%d/%m/%Y %H:%i') AS datebr,
+            DATE_FORMAT(expire, '%d/%m/%Y %H:%i') AS expirebr
+        FROM redir
+        WHERE status = 'on'
+        ORDER BY name, short, date DESC, expire DESC;
+    '''
+    cur = mysql.connection.cursor()
+    cur.execute(sql)
+    shortlinks = cur.fetchall()
+    cur.close()
+
+    print('\n\n\n', shortlinks, '\n\n\n')
+
+    page = {
+        'root_link': root_link,
+        'shortlinks': shortlinks
+    }
+
+    return render_template('admin.html', page=page)
 
 
 @app.route('/new', methods=['GET', 'POST'])
@@ -74,14 +103,8 @@ def new():
         else:
 
             sql = '''
-                INSERT INTO redir (
-                    name, link, short, expire
-                ) VALUES (
-                    %s,
-                    %s,
-                    %s,
-                    %s
-                )
+                INSERT INTO redir (name, link, short, expire)
+                VALUES (%s, %s, %s, %s)
             '''
             cur.execute(sql, (form['name'], form['link'],
                         form['short'], form['expire'],))
