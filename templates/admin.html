@@ -4,6 +4,16 @@
 
 <h2>Meus Shortlinks</h2>
 
+{% if page.action == 'del' %}
+
+<blockquote>Shortlink apagado!</blockquote>
+
+{% elif page.action == 'upd' %}
+
+<blockquote>Shortlink atualizado!</blockquote>
+
+{% endif %}
+
 {% for short in page.shortlinks %}
 
 <h3>
@@ -18,7 +28,7 @@
     <li>
         Ações:
         <button title="Editar este shortlink" onclick="location.href='/edit/{{ short.id }}'">&#9998;</button>
-        <button title="Apagar este shortlink" onclick="location.href='/del/{{ short.id }}'">&#128465;</button>
+        <button title="Apagar este shortlink" onclick="if(confirm('Tem certeza que deseja apagar o shortlink \'{{ short.name }}\'?')) location.href='/del/{{ short.id }}'; else return false">&#128465;</button>
     </li>
 </ul>
 

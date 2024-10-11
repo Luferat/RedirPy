@@ -1,3 +1,45 @@
 {% extends '_theme.html' %}
 
-{% block content %}{% endblock %}
+{% block content %}
+
+<h2>Editando Shortlink</h2>
+
+<p>Edite apenas os dados necessários para modificar o redirecionamento.</p>
+
+<form action="/edit/{{ page.link.id }}" method="post">
+
+    <p>
+        <label for="name">
+            Nome:
+        </label>
+        <input type="text" name="name" id="name" required minlength="4" value="{{ page.link.name }}"> <sup title="Obrigatório: um nome canônico para o novo link.">?</sup>
+    </p>
+
+    <p>
+        <label for="link">
+            Link original:
+        </label>
+        <input type="url" name="link" id="link" required value="{{ page.link.link }}"> <sup title="Obrigatório: o link original que será redirecionado. Use Ctrl+C e Ctrl+V!">?</sup>
+    </p>
+
+    <p>
+        <label for="short">
+            https://localhost:5000/
+            <input type="text" name="short" id="short" required minlength="2" value="{{ page.link.short }}">
+            <sup title="Obrigatório: complemento da URL para redirecionar. Use um nome curto com somente letras e números.">?</sup>
+        </label>
+    </p>
+
+    <p>
+        <label for="expire">Expiração:</label>
+        <input type="datetime-local" name="expire" id="expire" value="{{ page.link.date }}" required>
+        <sup title="Obrigatório: selecione a data de expiração ou aceite a data atual que tem 1 ano de validade.">?</sup>
+    </p>
+
+    <p>
+        <button type="submit">Salvar Shortlink</button>
+    </p>
+
+</form>
+
+{% endblock %}

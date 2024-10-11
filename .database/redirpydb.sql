@@ -9,9 +9,9 @@ USE redirpydb;
 CREATE TABLE redir (
     id INT PRIMARY KEY AUTO_INCREMENT,
     date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    name VARCHAR(127) UNIQUE NOT NULL,
+    name VARCHAR(127) NOT NULL,
     link TEXT NOT NULL,
-    short VARCHAR(127) UNIQUE NOT NULL,
+    short VARCHAR(127) NOT NULL,
     expire DATETIME DEFAULT NULL,
     views INT DEFAULT '0',
     status ENUM('on', 'del') DEFAULT 'on'
