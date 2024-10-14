@@ -36,7 +36,7 @@ def before_request():
 def home(short):
 
     sql = '''
-        SELECT link
+        SELECT id, link
         FROM redir
         WHERE short = %s AND status = 'on';
     '''
@@ -49,6 +49,17 @@ def home(short):
 
     if link == None:
         return page_not_found(404)
+
+    # Atualiza contador de 'views'
+    sql = '''
+        UPDATE redir 
+        SET views = views + 1
+        WHERE id = %s
+    '''
+    cur = mysql.connection.cursor()
+    cur.execute(sql, (link['id'],))
+    cur.connection.commit()
+    cur.close()
 
     return redirect(link['link'])
 
@@ -71,7 +82,8 @@ def edit(id):
        '''
         # print('\n\n\n', sql, '\n\n\n')
         cur = mysql.connection.cursor()
-        cur.execute(sql, (form['name'], form['link'], form['short'], form['expire'], id, ))
+        cur.execute(sql, (form['name'], form['link'],
+                    form['short'], form['expire'], id, ))
         mysql.connection.commit()
         cur.close()
 
